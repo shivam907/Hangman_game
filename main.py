@@ -74,6 +74,11 @@ def play_game(attempts=5):
         check_game = check_the_game(selected_word, current_state, attempts_remaining)
 
         if check_game==False :
+            print("Do You Want to Play Again (Y/N) ")
+            c=input()
+            if c=="Y" or c=="y":
+                play_game()
+                
             break
 
 if __name__ == "__main__":
