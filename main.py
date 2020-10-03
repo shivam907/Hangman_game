@@ -1,4 +1,6 @@
 from random_word_generator import pick_random_word
+from os import system, name 
+
 
 def change_the_state(current_state, input_char, selected_word):
     modified_word = ""
@@ -12,11 +14,60 @@ def change_the_state(current_state, input_char, selected_word):
 
     return modified_word
 
-
-
+def draw_hangman(attempts_remaining):
+    if(attempts_remaining == 5):
+        print ("_________")
+        print ("|    |")
+        print ("|")
+        print ("|")
+        print ("|")
+        print ("|")
+        print ("|________")
+    elif(attempts_remaining == 4):
+        print ("_________")
+        print ("|    |")
+        print ("|    O")
+        print ("|")
+        print ("|")
+        print ("|")
+        print ("|________")
+    elif(attempts_remaining == 3):
+        print ("_________")
+        print ("|    |")
+        print ("|    O")
+        print ("|    |")
+        print ("|    |")
+        print ("|")
+        print ("|________")
+    elif(attempts_remaining == 2):
+        print ("_________")
+        print ("|    |")
+        print ("|    O")
+        print ("|   \|/")
+        print ("|    |")
+        print ("|")
+        print ("|________")
+    elif(attempts_remaining == 1):
+        print ("_________")
+        print ("|    |")
+        print ("|    O")
+        print ("|   \|/")
+        print ("|    |")
+        print ("|    |")
+        print ("|________")
+    elif(attempts_remaining == 0):
+        print ("_________")
+        print ("|    |")
+        print ("|    O")
+        print ("|   \|/")
+        print ("|    |")
+        print ("|   / \\")
+        print ("|________")
 
 def print_current_state(current_state, attempts_remaining):
 
+    clear()
+    draw_hangman(attempts_remaining)
     print("current word state :", end=" ")
 
     for i in current_state:
@@ -74,12 +125,24 @@ def play_game(attempts=5):
         check_game = check_the_game(selected_word, current_state, attempts_remaining)
 
         if check_game==False :
+            
             print("Do You Want to Play Again (Y/N) ")
             c=input()
             if c=="Y" or c=="y":
                 play_game()
                 
             break
+
+def clear(): 
+  
+    # for windows 
+    if name == 'nt': 
+        _ = system('cls') 
+  
+    # for mac and linux 
+    else: 
+        _ = system('clear') 
+  
 
 if __name__ == "__main__":
     play_game()
