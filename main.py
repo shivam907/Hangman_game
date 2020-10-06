@@ -1,85 +1,144 @@
-from random_word_generator import pick_random_word
+import random
+import time
 
-def change_the_state(current_state, input_char, selected_word):
-    modified_word = ""
-    
-    for i in range(len(selected_word)):
-        if current_state[i] == "_" and selected_word[i] == input_char:
-            modified_word+=selected_word[i]
-        
-        else:
-            modified_word+=current_state[i]
-
-    return modified_word
+# Initial Steps to invite in the game:
+print("\nWelcome to Hangman game by DataFlair\n")
+name = input("Enter your name: ")
+print("Hello " + name + "! Best of Luck!")
+time.sleep(2)
+print("The game is about to start!\n Let's play Hangman!")
+time.sleep(3)
 
 
+# The parameters we require to execute the game:
+def main():
+    global count
+    global display
+    global word
+    global already_guessed
+    global length
+    global play_game
+    words_to_guess = ["january","border","image","film","promise","kids","lungs","doll","rhyme","damage"
+                   ,"plants"]
+    word = random.choice(words_to_guess)
+    length = len(word)
+    count = 0
+    display = '_' * length
+    already_guessed = []
+    play_game = ""
+
+# A loop to re-execute the game when the first round ends:
+
+def play_loop():
+    global play_game
+    play_game = input("Do You want to play again? y = yes, n = no \n")
+    while play_game not in ["y", "n","Y","N"]:
+        play_game = input("Do You want to play again? y = yes, n = no \n")
+    if play_game == "y":
+        main()
+    elif play_game == "n":
+        print("Thanks For Playing! We expect you back again!")
+        exit()
+
+# Initializing all the conditions required for the game:
+def hangman():
+    global count
+    global display
+    global word
+    global already_guessed
+    global play_game
+    limit = 5
+    guess = input("This is the Hangman Word: " + display + " Enter your guess: \n")
+    guess = guess.strip()
+    if len(guess.strip()) == 0 or len(guess.strip()) >= 2 or guess <= "9":
+        print("Invalid Input, Try a letter\n")
+        hangman()
 
 
-def print_current_state(current_state, attempts_remaining):
+    elif guess in word:
+        already_guessed.extend([guess])
+        index = word.find(guess)
+        word = word[:index] + "_" + word[index + 1:]
+        display = display[:index] + guess + display[index + 1:]
+        print(display + "\n")
 
-    print("current word state :", end=" ")
+    elif guess in already_guessed:
+        print("Try another letter.\n")
 
-    for i in current_state:
-        print(i, end=" ")
-
-    print("\t Attempts Remaining :",attempts_remaining)
-
-
-def check_in_word(selected_word, input_char, attempts_remaining, current_state):
-    
-    if input_char in selected_word:
-        current_state = change_the_state(current_state, input_char, selected_word)
     else:
-        attempts_remaining-=1
+        count += 1
 
-    return attempts_remaining, current_state
+        if count == 1:
+            time.sleep(1)
+            print("   _____ \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "__|__\n")
+            print("Wrong guess. " + str(limit - count) + " guesses remaining\n")
 
-    
-def check_the_game(selected_word, current_state, attempts_remaining):
+        elif count == 2:
+            time.sleep(1)
+            print("   _____ \n"
+                  "  |     | \n"
+                  "  |     |\n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "__|__\n")
+            print("Wrong guess. " + str(limit - count) + " guesses remaining\n")
 
-    if(attempts_remaining<=0):
-        print("Sorry You Lost! :( Try Again!)")
-        print("The word was:",selected_word)
-        return False
+        elif count == 3:
+           time.sleep(1)
+           print("   _____ \n"
+                 "  |     | \n"
+                 "  |     |\n"
+                 "  |     | \n"
+                 "  |      \n"
+                 "  |      \n"
+                 "  |      \n"
+                 "__|__\n")
+           print("Wrong guess. " + str(limit - count) + " guesses remaining\n")
 
-    if selected_word==current_state:
-        print("Congratulation!! Winner winner chicken dinner")
-        return False
-    return True
+        elif count == 4:
+            time.sleep(1)
+            print("   _____ \n"
+                  "  |     | \n"
+                  "  |     |\n"
+                  "  |     | \n"
+                  "  |     O \n"
+                  "  |      \n"
+                  "  |      \n"
+                  "__|__\n")
+            print("Wrong guess. " + str(limit - count) + " last guess remaining\n")
+
+        elif count == 5:
+            time.sleep(1)
+            print("   _____ \n"
+                  "  |     | \n"
+                  "  |     |\n"
+                  "  |     | \n"
+                  "  |     O \n"
+                  "  |    /|\ \n"
+                  "  |    / \ \n"
+                  "__|__\n")
+            print("Wrong guess. You are hanged!!!\n")
+            print("The word was:",already_guessed,word)
+            play_loop()
+
+    if word == '_' * length:
+        print("Congrats! You have guessed the word correctly!")
+        play_loop()
+
+    elif count != limit:
+        hangman()
 
 
+main()
 
-def play_game(attempts=5):
-    selected_word = pick_random_word()
-    current_state = ""
-    for i in selected_word:
-        if i == 'a' or i == 'e' or i == 'i' or i == 'o' or i == 'u':
-            current_state+=i
-        else:
-            current_state+='_'
-    
-    attempts_remaining = attempts
-    
-    print_current_state(current_state, attempts_remaining)
 
-    while True:
-
-        input_char = input("Guess the character : ")
-
-        attempts_remaining, current_state = check_in_word(selected_word, input_char, attempts_remaining, current_state)
-
-        print_current_state(current_state, attempts_remaining)
-
-        
-        check_game = check_the_game(selected_word, current_state, attempts_remaining)
-
-        if check_game==False :
-            print("Do You Want to Play Again (Y/N) ")
-            c=input()
-            if c=="Y" or c=="y":
-                play_game()
-                
-            break
-
-if __name__ == "__main__":
-    play_game()
+hangman()
