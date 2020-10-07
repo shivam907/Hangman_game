@@ -1,5 +1,5 @@
 from random_word_generator import pick_random_word
-from os import system, name 
+from os import *
 
 
 def change_the_state(current_state, input_char, selected_word):
